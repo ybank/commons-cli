@@ -229,7 +229,7 @@ public class BugCLI162Test extends TestCase {
         new HelpFormatter().printHelp(this.getClass().getName(), commandLineOptions);
     }
 
-    public void testLongLineChunking() throws ParseException, IOException {
+    public void testLongLineChunking_old() throws ParseException, IOException {
         Options options = new Options();
         options.addOption("x", "extralongarg", false,
                                      "This description has ReallyLongValuesThatAreLongerThanTheWidthOfTheColumns " +
@@ -267,6 +267,76 @@ public class BugCLI162Test extends TestCase {
             // expected
         }
 
+    }
+
+    public void testLongLineChunking() throws ParseException, IOException {
+        Options options = new Options();
+        options.addOption("x", "extralongarg", false,
+                                     "This description has ReallyLongValuesThatAreLongerThanTheWidthOfTheColumns " +
+                                     "and also other ReallyLongValuesThatAreHugerAndBiggerThanTheWidthOfTheColumnsBob, " +
+                                     "yes. ");
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        formatter.printHelp(new PrintWriter(sw), 35, this.getClass().getName(), "Header", options, 0, 5, "Footer");
+        String expected = "usage:\n" +
+                          "       org.apache.commons.cli.bug.B\n" +
+                          "       ugCLI162Test\n" +
+                          "Header\n" +
+                          "-x,--extralongarg     This\n" +
+                          "                      description\n" +
+                          "                      has\n" +
+                          "                      ReallyLongVal\n" +
+                          "                      uesThatAreLon\n" +
+                          "                      gerThanTheWid\n" +
+                          "                      thOfTheColumn\n" +
+                          "                      s and also\n" +
+                          "                      other\n" +
+                          "                      ReallyLongVal\n" +
+                          "                      uesThatAreHug\n" +
+                          "                      erAndBiggerTh\n" +
+                          "                      anTheWidthOfT\n" +
+                          "                      heColumnsBob,\n" +
+                          "                      yes.\n" +
+                          "Footer\n";
+        assertEquals( "Long arguments did not split as expected", expected, sw.toString() );
+    }
+
+    public void testLongLineChunkingIndentIgnored() throws ParseException, IOException {
+        Options options = new Options();
+        options.addOption("x", "extralongarg", false, "This description is Long." );
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        formatter.printHelp(new PrintWriter(sw), 22, this.getClass().getName(), "Header", options, 0, 5, "Footer");
+        String expected = "usage:\n" +
+                          "       org.apache.comm\n" +
+                          "       ons.cli.bug.Bug\n" +
+                          "       CLI162Test\n" +
+                          "Header\n" +
+                          "-x,--extralongarg\n" +
+                          "                     T\n" +
+                          "                     h\n" +
+                          "                     i\n" +
+                          "                     s\n" +
+                          "                     d\n" +
+                          "                     e\n" +
+                          "                     s\n" +
+                          "                     c\n" +
+                          "                     r\n" +
+                          "                     i\n" +
+                          "                     p\n" +
+                          "                     t\n" +
+                          "                     i\n" +
+                          "                     o\n" +
+                          "                     n\n" +
+                          "                     i\n" +
+                          "                     s\n" +
+                          "                     L\n" +
+                          "                     o\n" +
+                          "                     n\n" +
+                          "                     g\n" +
+                          "                     .\n" +
+                          "Footer\n";
+        assertEquals( "Long arguments did not split as expected", expected, sw.toString() );
     }
 
 }
