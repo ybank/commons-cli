@@ -41,6 +41,7 @@ public class BugCLI162Test extends TestCase {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setWidth(20);
         try {
+			fail("formatter.printHelp(\"app\", options); hang and crash");
             formatter.printHelp("app", options); // hang & crash
         } catch(RuntimeException re) {
             assertTrue(re.getMessage().startsWith("Text too long for line - throwing exception to avoid infinite loop [CLI-162]: "));
