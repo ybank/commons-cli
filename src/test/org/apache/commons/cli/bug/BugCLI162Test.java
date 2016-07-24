@@ -293,6 +293,7 @@ public class BugCLI162Test extends TestCase {
         assertEquals( "Long arguments did not split as expected", expected, sw.toString() );
 
         try {
+			fail("testLongLineChunking: formatter.printHelp(...) hang and crash");
             formatter.printHelp(new PrintWriter(sw), 22, this.getClass().getName(), "Header", options, 0, 5, "Footer");
             fail("IllegalStateException expected");
         } catch(IllegalStateException ise) {
