@@ -261,7 +261,7 @@ public class HelpFormatterTest extends TestCase
     }
 
     // uses the test for CLI-131 to implement CLI-155
-    public void testPrintSortedUsage()
+    public void testPrintSortedUsage_old()
     {
         Options opts = new Options();
         opts.addOption(new Option("a", "first"));
@@ -286,7 +286,7 @@ public class HelpFormatterTest extends TestCase
         assertEquals("usage: app [-c] [-b] [-a]" + EOL, out.toString());
     }
 
-    public void testPrintSortedUsageWithNullComparator()
+    public void testPrintSortedUsageWithNullComparator_old()
     {
         Options opts = new Options();
         opts.addOption(new Option("a", "first"));
@@ -300,6 +300,46 @@ public class HelpFormatterTest extends TestCase
         helpFormatter.printUsage(new PrintWriter(out), 80, "app", opts);
 
         assertEquals("usage: app [-a] [-b] [-c]" + EOL, out.toString());
+    }
+
+    // uses the test for CLI-131 to implement CLI-155
+    public void testPrintSortedUsage()
+    {
+        Options opts = new Options();
+        opts.addOption(new Option("a", "first"));
+        opts.addOption(new Option("b", "second"));
+        opts.addOption(new Option("c", "third"));
+
+        HelpFormatter helpFormatter = new HelpFormatter();
+        helpFormatter.setOptionComparator(new Comparator<Option>()
+        {
+            public int compare(Option opt1, Option opt2)
+            {
+                // reverses the fuctionality of the default comparator
+                return opt2.getKey().compareToIgnoreCase(opt1.getKey());
+            }
+        });
+
+        StringWriter out = new StringWriter();
+        helpFormatter.printUsage(new PrintWriter(out), 80, "app", opts);
+
+        assertEquals("usage: app [-c] [-b] [-a]" + EOL, out.toString());
+    }
+
+    public void testPrintSortedUsageWithNullComparator()
+    {
+        Options opts = new Options();
+        opts.addOption(new Option("c", "first"));
+        opts.addOption(new Option("b", "second"));
+        opts.addOption(new Option("a", "third"));
+
+        HelpFormatter helpFormatter = new HelpFormatter();
+        helpFormatter.setOptionComparator(null);
+
+        StringWriter out = new StringWriter();
+        helpFormatter.printUsage(new PrintWriter(out), 80, "app", opts);
+
+        assertEquals("usage: app [-c] [-b] [-a]" + EOL, out.toString());
     }
 
     public void testPrintOptionGroupUsage()
