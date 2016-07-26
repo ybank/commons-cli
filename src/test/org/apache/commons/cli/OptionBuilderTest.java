@@ -136,7 +136,7 @@ public class OptionBuilderTest extends TestCase {
         }
     }
 
-    public void testCreateIncompleteOption() {
+    public void testCreateIncompleteOption_old() {
         try
         {
             OptionBuilder.hasArg().create();
@@ -146,5 +146,44 @@ public class OptionBuilderTest extends TestCase {
         {
             // expected
         }
+    }
+
+    public void testCreateIncompleteOption() {
+        try
+        {
+            OptionBuilder.hasArg().create();
+            fail("Incomplete option should be rejected");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // expected
+            
+            // implicitly reset the builder
+            OptionBuilder.create( "opt" );
+        }
+    }
+
+    public void testBuilderIsResettedAlways() {
+        try
+        {
+            OptionBuilder.withDescription("JUnit").create('"');
+            fail("IllegalArgumentException expected");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // expected
+        }
+        assertNull("we inherited a description", OptionBuilder.create('x').getDescription());
+
+        try
+        {
+            OptionBuilder.withDescription("JUnit").create();
+            fail("IllegalArgumentException expected");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // expected
+        }
+        assertNull("we inherited a description", OptionBuilder.create('x').getDescription());
     }
 }
