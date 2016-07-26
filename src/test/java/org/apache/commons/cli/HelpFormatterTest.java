@@ -35,7 +35,7 @@ public class HelpFormatterTest extends TestCase
 {
     private static final String EOL = System.getProperty("line.separator");
 
-    public void testFindWrapPos() throws Exception
+    public void testFindWrapPos_old() throws Exception
     {
         HelpFormatter hf = new HelpFormatter();
 
@@ -49,6 +49,40 @@ public class HelpFormatterTest extends TestCase
         // if there is no a good position before width to make a wrapping look for the next one
         text = "aaaa aa";
         assertEquals("wrap position 3", 4, hf.findWrapPos(text, 3, 0));
+    }
+
+    public void testFindWrapPos() throws Exception
+    {
+        HelpFormatter hf = new HelpFormatter();
+
+        String text = "This is a test.";
+        // text width should be max 8; the wrap position is 7
+        assertEquals("wrap position", 7, hf.findWrapPos(text, 8, 0));
+        
+        // starting from 8 must give -1 - the wrap pos is after end
+        assertEquals("wrap position 2", -1, hf.findWrapPos(text, 8, 8));
+        
+        // words longer than the width are cut
+        text = "aaaa aa";
+        assertEquals("wrap position 3", 3, hf.findWrapPos(text, 3, 0));
+        
+        // last word length is equal to the width
+        text = "aaaaaa aaaaaa";
+        assertEquals("wrap position 4", 6, hf.findWrapPos(text, 6, 0));
+        assertEquals("wrap position 4", -1, hf.findWrapPos(text, 6, 7));
+    }
+
+    public void testRenderWrappedTextWordCut()
+    {
+        int width = 7;
+        int padding = 0;
+        String text = "Thisisatest.";
+        String expected = "Thisisa" + EOL + 
+                          "test.";
+        
+        StringBuffer sb = new StringBuffer();
+        new HelpFormatter().renderWrappedText(sb, width, padding, text);
+        assertEquals("cut and wrap", expected, sb.toString());
     }
 
     public void testRenderWrappedTextSingleLine()
