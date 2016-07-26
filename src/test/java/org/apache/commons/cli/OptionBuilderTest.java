@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 public class OptionBuilderTest extends TestCase {
 
-    public void testCompleteOption( ) {
+    public void testCompleteOption_old( ) {
         Option simple = OptionBuilder.withLongOpt( "simple option")
                                      .hasArg( )
                                      .isRequired( )
@@ -39,7 +39,7 @@ public class OptionBuilderTest extends TestCase {
         assertTrue( simple.hasArgs() );
     }
 
-    public void testTwoCompleteOptions( ) {
+    public void testTwoCompleteOptions_old( ) {
         Option simple = OptionBuilder.withLongOpt( "simple option")
                                      .hasArg( )
                                      .isRequired( )
@@ -65,6 +65,55 @@ public class OptionBuilderTest extends TestCase {
         assertEquals( "dimple option", simple.getLongOpt() );
         assertEquals( "this is a dimple option", simple.getDescription() );
         assertNull( simple.getType() );
+        assertTrue( simple.hasArg() );
+        assertTrue( !simple.isRequired() );
+        assertTrue( !simple.hasArgs() );
+    }
+
+    public void testCompleteOption( ) {
+        Option simple = OptionBuilder.withLongOpt( "simple option")
+                                     .hasArg( )
+                                     .isRequired( )
+                                     .hasArgs( )
+                                     .withType( Float.class )
+                                     .withDescription( "this is a simple option" )
+                                     .create( 's' );
+
+        assertEquals( "s", simple.getOpt() );
+        assertEquals( "simple option", simple.getLongOpt() );
+        assertEquals( "this is a simple option", simple.getDescription() );
+        assertEquals( simple.getType(), Float.class );
+        assertTrue( simple.hasArg() );
+        assertTrue( simple.isRequired() );
+        assertTrue( simple.hasArgs() );
+    }
+
+    public void testTwoCompleteOptions( ) {
+        Option simple = OptionBuilder.withLongOpt( "simple option")
+                                     .hasArg( )
+                                     .isRequired( )
+                                     .hasArgs( )
+                                     .withType( Float.class )
+                                     .withDescription( "this is a simple option" )
+                                     .create( 's' );
+
+        assertEquals( "s", simple.getOpt() );
+        assertEquals( "simple option", simple.getLongOpt() );
+        assertEquals( "this is a simple option", simple.getDescription() );
+        assertEquals( simple.getType(), Float.class );
+        assertTrue( simple.hasArg() );
+        assertTrue( simple.isRequired() );
+        assertTrue( simple.hasArgs() );
+
+        simple = OptionBuilder.withLongOpt( "dimple option")
+                              .hasArg( )
+                              .withDescription( "this is a dimple option" )
+                              .create( 'd' );
+
+        assertEquals( "d", simple.getOpt() );
+        assertEquals( "dimple option", simple.getLongOpt() );
+        assertEquals( "this is a dimple option", simple.getDescription() );
+        assertEquals( String.class, simple.getType() );
         assertTrue( simple.hasArg() );
         assertTrue( !simple.isRequired() );
         assertTrue( !simple.hasArgs() );
